@@ -1,0 +1,45 @@
+@startuml
+
+title "Будущее 2.0"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(businessUser, "Бизнес-пользователь")
+Person(operator, "Оператор клиники")
+Person(partner, "Финансовый партнер")
+
+System(portal, "Портал самообслуживания")
+System(DataMartProcess, "Формирование витрин данных")
+System(ai_proc, "ИИ-обработка данных")
+System(fun_proc, "Фин.операции")
+System(integration, "Интеграция данных")
+System(etl, "ETL-процессы")
+
+SystemDb(dwh, "Data Warehouse")
+SystemDb(dataLake, "Data Lake")
+SystemDb(ai, "AI-хранилище")
+SystemDb(dataMart, "Витрины данных")
+
+BiRel(businessUser, portal, "Получение отчета")
+Rel(portal, dataMart, "Запрос отчета")
+Rel(dataMart, portal, "Отчет")
+
+Rel(operator, integration, "Ввод мед.данных")
+Rel(integration, dataLake, "Передача мед.данных")
+Rel(integration, dwh, "Передача мед.данных")
+
+Rel(partner, fun_proc, "Фин.транзакции")
+Rel(fun_proc, integration, "Фин.данные")
+Rel(integration, dataLake, "Фин.данные")
+Rel(integration, dwh, "Фин.данные")
+
+Rel(integration, ai_proc, "Данные для ML-анализа")
+Rel(ai_proc, ai, "Результаты анализа")
+Rel(ai_proc, integration, "Возврат результатов анализа")
+Rel(integration, operator, "Обработанные результаты")
+
+Rel(dataLake, etl, "Данные для обработки")
+Rel(etl, dwh, "Обработанные данные")
+Rel(etl, dataMart, "Данные для витрин")
+
+@enduml
