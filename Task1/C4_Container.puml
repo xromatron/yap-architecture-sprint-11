@@ -11,11 +11,11 @@ System_Boundary(system, "Будущее 2.0") {
 
     Container(portal, "Портал самообслуживания")
 
-    Container_Boundary(dwh, "Data Warehouse") {
-        Container(storage, "Хранилище данных")
-        Container(dataLake, "Data Lake")
-        Container(etl, "ETL-процессы")
-        Container(dataMart, "Витрины данных")
+    Boundary(dwh, "Data Warehouse (новый)") {
+        Container(storage, "Хранилище данных", "PostgreSQL, Hadoop")
+        Container(dataLake, "Data Lake", "S3, HDFS")
+        Container(etl, "ETL-процессы", "Apache Airflow")
+        Container(dataMart, "Витрины данных", "PostgreSQL, ClickHouse")
     }
 
     Container(apps, "Слой микросервисов бизнес-логики")
@@ -25,7 +25,7 @@ System_Boundary(system, "Будущее 2.0") {
     Container(aiServices, "ИИ-сервисы")
     Container(finServices, "Финтех-сервисы")
 
-    Container(integration, "Интеграционная шина")
+    Container(integration, "Интеграционная шина", "Apache Camel")
 }
 
 Rel(businessUser, portal, "Использует", "HTTPS")
