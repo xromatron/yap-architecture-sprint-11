@@ -1,0 +1,51 @@
+@startuml
+
+title "Будущее 2.0"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(businessUser, "Бизнес-пользователь")
+Person(operator, "Оператор клиники")
+
+System_Boundary(system, "Будущее 2.0") {
+
+    Container(portal, "Портал самообслуживания")
+
+    Boundary(dwh, "Data Warehouse (новый)") {
+        Container(storage, "Хранилище данных", "PostgreSQL, Hadoop")
+        Container(dataLake, "Data Lake", "S3, HDFS")
+        Container(etl, "ETL-процессы", "Apache Airflow")
+        Container(dataMart, "Витрины данных", "PostgreSQL, ClickHouse")
+    }
+
+    Container(apps, "Слой микросервисов бизнес-логики")
+
+    Container(apiGateway, "API Gateway")
+
+    Container(aiServices, "ИИ-сервисы")
+    Container(finServices, "Финтех-сервисы")
+
+    Container(integration, "Интеграционная шина", "Apache Camel")
+}
+
+Rel(businessUser, portal, "Использует", "HTTPS")
+Rel(operator, apiGateway, "Использует", "HTTPS")
+
+Rel(portal, apps, "REST API")
+Rel(apps, dataMart, "Запросы к витринам данных")
+Rel(apps, storage, "Чтение/запись")
+
+Rel(etl, dataLake, "Загрузка и обработка данных")
+Rel(etl, storage, "Загрузка и обновление данных")
+Rel(etl, dataMart, "Формирование витрин данных")
+
+Rel(apiGateway, apps, "REST API")
+Rel(apiGateway, aiServices, "REST API")
+Rel(apiGateway, finServices, "REST API")
+
+Rel(aiServices, dataLake, "Чтение медицинских данных")
+Rel(finServices, integration, "Отправка финансовых данных")
+Rel(integration, dataLake, "Запись данных")
+Rel(integration, storage, "Запись данных")
+
+@enduml
